@@ -17,6 +17,7 @@ class Parser
     st_check_attrib,
     st_collect_attrib,
     st_start_atribute_value,
+    st_collect_attribute_value,
   };
 
   states_t	state;
@@ -109,6 +110,11 @@ public:
       case st_collect_attrib:
         CollectAttrib();
         break;
+      case st_start_atribute_value:
+        if(ch == L'"')
+          state = st_collect_attribute_value;
+        else
+          state = st_error;
       default:
         cout << "State not parsed" << endl;
     }
