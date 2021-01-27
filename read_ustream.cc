@@ -303,24 +303,31 @@ public:
   }
 };
 
-D3D_Node * load(const char * filename)
+D3D_Node * Load(wistream * stream)
+{
+    D3D_Node		*   result = nullptr;
+    Parser	            parser;
+    wchar_t	            ch;
+
+    while (stream->get(ch))
+        if (!parser.Fetch(ch))
+        {
+            cerr << "Input file format error" << endl;
+            break;
+        }
+    return parser.GetRoot();
+}
+
+D3D_Node * Load(const char * filename)
 {
   D3D_Node		*   result = nullptr;
   wifstream	        report;
-  Parser	        parser;
-  wchar_t	        ch;
 
   report.open(filename);
-  if(!report)
+  if(!report == true)
     return nullptr;
-  while(report.get(ch))
-    if(!parser.Fetch(ch))
-    {
-       cerr << "Input file format error" << endl;
-       break;
-    }
+  result = Load(&report);
   report.close();
-  result = parser.GetRoot();
   return result;
 }
 
@@ -331,6 +338,6 @@ int main(int argc, char * argv[])
     cerr << "Not enough program arguments" << endl;
     return -1;
   }
-  D3D_Node * xml_tree = load(argv[1]);
+  D3D_Node * xml_tree = Load(argv[1]);
   return 0;
 }
