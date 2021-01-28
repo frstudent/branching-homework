@@ -320,6 +320,8 @@ void ShowNode(D3D_Node * node, int pos)
         wcout << L">" << endl;
         for (auto item : node->Child)
             ShowNode(&*item, pos + 2);
+        for (int i = 0; i < pos; i++)
+            wcout << L' ';
         wcout << L"</" << node->NodeName << L">" << endl;
     }
     else
