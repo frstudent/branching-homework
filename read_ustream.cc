@@ -4,34 +4,9 @@
 #include <string>
 #include <list>
 
+#include "simple_xml.h"
+
 using namespace std;
-
-class D3D_Attrib
-{
-public:
-    wstring Name;
-    wstring Value;
-    D3D_Attrib(wstring name, wstring value)
-    {
-        Name = name;
-        Value = value;
-    }
-};
-
-class D3D_Node
-{
-public:
-    wstring                 NodeName;
-    D3D_Node            *   Parent;
-    list<D3D_Attrib *>      Attributes;
-    list<D3D_Node *>        Child;
-
-    D3D_Node(wstring name, D3D_Node * parent)
-    {
-        NodeName = name;
-        Parent = parent;
-    }
-};
 
 class Parser
 {
@@ -285,7 +260,7 @@ public:
         state = st_error;
         break;
     }
-    wcout << ch;
+//    wcout << ch;
     return state != st_error;
   }
 
@@ -331,6 +306,32 @@ D3D_Node * Load(const char * filename)
   return result;
 }
 
+void ShowNode(D3D_Node * node, int pos)
+{
+    for (int i = 0; i < pos; i++)
+        wcout << L' ';
+    wcout << L'<' << node->NodeName;
+    for(auto attr : node->Attributes)
+    {
+        wcout << L' ' << attr->Name << L"=\"" << attr->Value << L'"';
+    }
+    if (node->Child.size() > 0)
+    {
+        wcout << L">" << endl;
+        for (auto item : node->Child)
+            ShowNode(&*item, pos + 2);
+        wcout << L"</" << node->NodeName << L">" << endl;
+    }
+    else
+        wcout << L"/>" << endl;
+}
+
+void ShowXml(D3D_Node * root)
+{
+    wcout << "<?xml version=\"1.0\" encoding=\"utf - 8\"?>" << endl;
+    ShowNode(root, 0);
+}
+
 int main(int argc, char * argv[])
 {
   if(argc < 2)
@@ -339,5 +340,6 @@ int main(int argc, char * argv[])
     return -1;
   }
   D3D_Node * xml_tree = Load(argv[1]);
+  ShowXml(xml_tree);
   return 0;
 }
