@@ -72,6 +72,12 @@ class Parser
           tag.clear();
           state = st_check_attrib;
       }
+      else if (ch == L'>')
+      {
+          current = new D3D_Node(tag, current);
+          tag.clear();
+          CloseTag(false);
+      }
       else if (ch == L'/')
       {
           current = new D3D_Node(tag, current);
@@ -336,12 +342,14 @@ void ShowXml(D3D_Node * root)
 
 int main(int argc, char * argv[])
 {
-  if(argc < 2)
-  {
-    cerr << "Not enough program arguments" << endl;
-    return -1;
-  }
-  D3D_Node * xml_tree = Load(argv[1]);
-  ShowXml(xml_tree);
-  return 0;
+    if(argc < 2)
+    {
+        cerr << "Not enough program arguments" << endl;
+        return -1;
+    }
+    D3D_Node * xml_tree = Load(argv[1]);
+    if (xml_tree == nullptr)
+      return -2;
+    ShowXml(xml_tree);
+    return 0;
 }
