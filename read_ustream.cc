@@ -16,8 +16,6 @@ class Parser
   { 
     st_error,
     st_startup, 
-    st_signature_2,
-    st_signature_3,
     st_default_state,
     st_check_tag,
     st_processing_instruction,
@@ -205,10 +203,6 @@ public:
       case st_startup:
         if(ch == 0xfeff)
           state = st_default_state;
-#if false
-        else if(ch == 0x00ef)
-          state = st_signature_2;
-#endif
         else if(ch == L'<')
           state = st_check_tag;
         else
@@ -217,19 +211,6 @@ public:
       case st_default_state:
         DeafaultState();
         break;
-      case st_signature_2:
-        if(ch == 0x00bb)
-          state = st_signature_3;
-        else
-          state = st_error;
-        break;
-      case st_signature_3:
-        if(ch == 0x00bf)
-          state = st_default_state;
-        else
-          state = st_error;
-        break;
-
       case st_check_tag:
         Distinguish();
         break;
@@ -272,7 +253,7 @@ public:
         state = st_error;
         break;
     }
-//    wcout << ch;
+
     return state != st_error;
   }
 
@@ -345,6 +326,9 @@ void ShowNode(D3D_Node * node, int pos)
 
 void ShowXml(D3D_Node * root)
 {
+    static locale empty;
+    wcout.imbue(locale(empty, new std::codecvt_utf8<wchar_t>));
+    wcout << L'\xFEFF';
     wcout << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << endl;
     ShowNode(root, 0);
 }
