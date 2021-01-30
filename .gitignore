@@ -48,3 +48,6 @@ Thumbs.db
 *.mov
 *.wmv
 
+/d3d_parser.sln
+/msvc
+/.vs/d3d_parser/v15
