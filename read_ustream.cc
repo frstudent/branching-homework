@@ -327,8 +327,11 @@ void ShowNode(D3D_Node * node, int pos)
 void ShowXml(D3D_Node * root)
 {
     static locale empty;
+
+    unsigned char BOM[] = { 0xef, 0xbb, 0xbf };
+    cout << BOM;
+
     wcout.imbue(locale(empty, new std::codecvt_utf8<wchar_t>));
-    wcout << L'\xFEFF';
     wcout << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << endl;
     ShowNode(root, 0);
 }
