@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 #include <list>
+#include <locale>
+#include <codecvt>
 
 #include "simple_xml.h"
 
@@ -201,8 +203,12 @@ public:
     switch(state)
     {
       case st_startup:
-        if(ch == 0x00ef)
+        if(ch == 0xfeff)
+          state = st_default_state;
+#if false
+        else if(ch == 0x00ef)
           state = st_signature_2;
+#endif
         else if(ch == L'<')
           state = st_check_tag;
         else
@@ -305,10 +311,12 @@ D3D_Node * Load(const char * filename)
   wifstream	        report;
 
   report.open(filename);
-  if(!report == true)
-    return nullptr;
-  result = Load(&report);
-  report.close();
+  if (report.is_open())
+  {
+      report.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+      result = Load(&report);
+      report.close();
+  }
   return result;
 }
 
