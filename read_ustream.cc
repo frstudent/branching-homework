@@ -313,7 +313,8 @@ D3D_Node * Load(const char * filename)
   report.open(filename);
   if (report.is_open())
   {
-      report.imbue(std::locale(std::locale::empty(), new std::codecvt_utf8<wchar_t>));
+      static locale empty;
+      report.imbue(locale(empty, new std::codecvt_utf8<wchar_t>));
       result = Load(&report);
       report.close();
   }
@@ -344,7 +345,7 @@ void ShowNode(D3D_Node * node, int pos)
 
 void ShowXml(D3D_Node * root)
 {
-    wcout << "<?xml version=\"1.0\" encoding=\"utf - 8\"?>" << endl;
+    wcout << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << endl;
     ShowNode(root, 0);
 }
 
